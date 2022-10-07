@@ -1,78 +1,64 @@
-import React, { Component } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState } from 'react';
 import './App.css';
-import { Header } from './components/Header'
-import { Users } from './components/Users'
-import { DisplayBoard } from './components/DisplayBoard'
-import CreateUser from './components/CreateUser'
-import { getAllUsers, createUser } from './services/UserService'
+import Header from './components/Header';
+import BookTable from './components/BookTable';
+import DisplayBoard from './components/DisplayBoard';
+import CreateBook from './components/CreateBook';
+import { getAllBooks, createBook } from './services/BookService';
+import Footer from './components/Footer';
 
-class App extends Component {
+function App () {
 
-  state = {
-    user: {},
-    users: [],
-    numberOfUsers: 0
-  }
+  const [bookShelf, setBookShelf] = useState({});
+  const [books, setBooks] = useState([]);
+  const [numberOfBooks, setNumberBooks] = useState(0);
 
-  createUser = (e) => {
-      createUser(this.state.user)
-        .then(response => {
-          console.log(response);
-          this.setState({numberOfUsers: this.state.numberOfUsers + 1})
+  const handleSubmit = () => {
+      createBook(bookShelf)
+        .then(() => {
+          setNumberBooks(numberOfBooks+1);
       });
   }
 
-  getAllUsers = () => {
-    getAllUsers()
-      .then(users => {
-        console.log(users)
-        this.setState({users: users, numberOfUsers: users.length})
+  const getAllBook = () => {
+    getAllBooks()
+      .then(data => {
+        setBooks(data);
+        setNumberBooks(data.length);
       });
   }
 
-  onChangeForm = (e) => {
-      let user = this.state.user
-      if (e.target.name === 'firstname') {
-          user.firstName = e.target.value;
-      } else if (e.target.name === 'lastname') {
-          user.lastName = e.target.value;
-      } else if (e.target.name === 'email') {
-          user.email = e.target.value;
+  const handleOnChangeForm = (e) => {
+      let inputData = bookShelf;
+      if (e.target.name === 'book') {
+        bookShelf.book = e.target.value;
+      } else if (e.target.name === 'category') {
+        bookShelf.category = e.target.value;
+      } else if (e.target.name === 'author') {
+        bookShelf.author = e.target.value;
       }
-      this.setState({user})
+      setBookShelf(inputData);
   }
 
-  render() {
-    
-    return (
-      <div className="App">
-        <Header></Header>
-        <div className="container mrgnbtm">
-          <div className="row">
-            <div className="col-md-8">
-                <CreateUser 
-                  user={this.state.user}
-                  onChangeForm={this.onChangeForm}
-                  createUser={this.createUser}
-                  >
-                </CreateUser>
-            </div>
-            <div className="col-md-4">
-                <DisplayBoard
-                  numberOfUsers={this.state.numberOfUsers}
-                  getAllUsers={this.getAllUsers}
-                >
-                </DisplayBoard>
-            </div>
-          </div>
-        </div>
-        <div className="row mrgnbtm">
-          <Users users={this.state.users}></Users>
-        </div>
+  
+  return (
+    <div className="main-wrapper">
+      <div className="main">
+        <Header />
+        <CreateBook 
+          bookShelf={bookShelf}
+          onChangeForm={handleOnChangeForm}
+          handleSubmit={handleSubmit}
+        />
+        <DisplayBoard 
+          numberOfBooks={numberOfBooks} 
+          getAllBook={getAllBook} 
+        />
+        <BookTable books={books} />
+        <Footer />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default App;

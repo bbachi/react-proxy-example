@@ -1,16 +1,22 @@
 import React from 'react'
 
-export const DisplayBoard = ({numberOfUsers, getAllUsers}) => {
+const DisplayBoard = ({numberOfBooks, getAllBook}) => {
     
     return(
-        <div className="display-board">
-            <h4>Users Created</h4>
-            <div className="number">
-            {numberOfUsers}
-            </div>
-            <div className="btn">
-                <button type="button" onClick={(e) => getAllUsers()} className="btn btn-warning">Get all Users</button>
+        <div className="display-wrapper">
+            <div className="display-box">
+                <div className="display-board">
+                    <h4>생성된 수</h4>
+                    <div className="number">
+                    {numberOfBooks}
+                    </div>
+                </div>
+                <div className="get-button">
+                    <button onClick={() => getAllBook()}>Get all Users</button>
+                </div>
             </div>
         </div>
     )
 }
+
+export default DisplayBoard;
